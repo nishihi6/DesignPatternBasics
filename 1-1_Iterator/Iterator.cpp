@@ -1,9 +1,9 @@
-#include <iostream>
+﻿#include <iostream>
 #include <string>
 
 using namespace std;
 
-// �{��\���N���X
+// 本を表すクラス
 class Book {
 private:
 	string name;
@@ -15,20 +15,20 @@ public:
 	}
 };
 
-// �����グ�A�X�L�������s���C���^�t�F�[�X�y�����q�̖��z
+// 数え上げ、スキャンを行うインタフェース【反復子の役】
 class Iterator {
 public:
-	virtual bool hasNext() = 0;	// ���̗v�f�����݂��邩�ǂ����𒲂ׂ郁�\�b�h�i�������z�֐��j
-	virtual Book next() = 0;	// ���̗v�f�𓾂邽�߂̃��\�b�h�i�������z�֐��j
+	virtual bool hasNext() = 0;	// 次の要素が存在するかどうかを調べるメソッド（純粋仮想関数）
+	virtual Book next() = 0;	// 次の要素を得るためのメソッド（純粋仮想関数）
 };
 
-// �W���̂�\���C���^�t�F�[�X�y�W���̖̂��z
+// 集合体を表すインタフェース【集合体の役】
 class Aggregate {
 public:
-	virtual Iterator* iterator() = 0;	// �W���̂ɑΉ�����Iterator���P�쐬�i�������z�֐��j
+	virtual Iterator* iterator() = 0;	// 集合体に対応するIteratorを１個作成（純粋仮想関数）
 };
 
-// �{�I��\���N���X�y��̓I�ȏW���̖̂��z
+// 本棚を表すクラス【具体的な集合体の役】
 class BookShelf : public Aggregate {
 private:
 	Book* books;
@@ -50,7 +50,7 @@ public:
 	Iterator* iterator();
 };
 
-// �{�I���X�L��������N���X�y��̓I�Ȕ����q�̖��z
+// 本棚をスキャンするクラス【具体的な反復子の役】
 class BookShelfIterator : public Iterator {
 private:
 	BookShelf bookShelf;
@@ -76,7 +76,7 @@ Iterator* BookShelf::iterator() {
 	return new BookShelfIterator(*this);
 }
 
-// ����e�X�g�p�̃N���X
+// 動作テスト用のクラス
 int main() {
 	BookShelf bookShelf = BookShelf(4);
 	bookShelf.appendbook(Book("Around the World in 80 Days"));
@@ -90,10 +90,10 @@ int main() {
 	}
 }
 
-//�f�U�C���p�^�[���̓N���X�̍ė��p���𑣐i������́B���\�b�hiterator�̖߂�l��BookShelfIterator�^�̕ϐ��ɑ�������AIterator�^�̕ϐ���
-//������Ă��闝�R�́A�P�̕��i���C�����Ă��A���̕��i�̏C�������Ȃ��Ă��ނ悤�ɂ��邽�߁B
+//デザインパターンはクラスの再利用化を促進するもの。メソッドiteratorの戻り値をBookShelfIterator型の変数に代入せず、Iterator型の変数に
+//代入している理由は、１つの部品を修正しても、他の部品の修正が少なくてすむようにするため。
 
-//��̓I�ȃN���X�������g���ƁA�N���X�Ԃ̌����������Ȃ��Ă��܂��A���i�Ƃ��čė��p���邱�Ƃ�����Ȃ�B���̂��߁A��������߁A
-//�N���X�𕔕i�Ƃ��čė��p���₷�����邽�߂ɁA���ۃN���X��C���^�t�F�[�X�����������B
+//具体的なクラスだけを使うと、クラス間の結合が強くなってしまい、部品として再利用することが難しくなる。そのため、結合を弱め、
+//クラスを部品として再利用しやすくするために、抽象クラスやインタフェースが導入される。
 
-//deleteIterator���K�v�����A����͎������Ă��Ȃ��B�iJava�Ȃ�s�v�j
+//deleteIteratorが必要だが、今回は実装していない。（Javaなら不要）
