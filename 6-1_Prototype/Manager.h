@@ -4,6 +4,7 @@
 #include <string>
 #include "Product.h"
 
+// createCloneを使ってインスタンスを複製するクラス
 class Manager {
 private:
     std::unordered_map<std::string, Product*> showcase;
@@ -18,3 +19,5 @@ public:
         return p->createClone();
     }
 };
+
+//ProductとManagerはMessageBoxやUnderlinePenクラスなどとは独立に修正ができる

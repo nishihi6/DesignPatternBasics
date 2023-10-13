@@ -3,6 +3,7 @@
 #include "Product.h"
 #include <iostream>
 
+// 文字列に下線を引いて表示するクラス（useとcreateCloneを実装）
 class UnderlinePen : public Product {
 private:
     char ulchar;
