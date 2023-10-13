@@ -3,6 +3,7 @@
 #include "Product.h"
 #include <iostream>
 
+// 文字列を枠線で囲って表示するクラス（useとcreateCloneの実装）
 class MessageBox : public Product {
 private:
     char decochar;
