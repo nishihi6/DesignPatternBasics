@@ -4,23 +4,23 @@
 #include <vector>
 #include <sstream>
 
-// Builder クラスの定義
+// Builder クラスの定義（文章を構成するためのメソッドを定めた抽象クラス）
 class Builder {
 public:
     virtual ~Builder() = default;
     virtual void makeTitle(const std::string& title) = 0;
     virtual void makeString(const std::string& str) = 0;
     virtual void makeItems(const std::vector<std::string>& items) = 0;
-    virtual void close() = 0;
+    virtual void close() = 0;   // 文章を完成させるメソッド
 };
 
-// Director クラスの定義
+// Director クラスの定義（１つの文章を作るクラス）
 class Director {
 private:
     Builder* builder;
 public:
-    Director(Builder* builder) : builder(builder) {}
-    void construct() {
+    Director(Builder* builder) : builder(builder) {}    // 引数はBuilderクラスのサブクラス
+    void construct() {  // 文章を作るメソッド
         builder->makeTitle("Greeting");
         builder->makeString("朝から昼にかけて");
         builder->makeItems({ "おはようございます。", "こんにちは。" });
@@ -30,7 +30,7 @@ public:
     }
 };
 
-// TextBuilder クラスの定義
+// TextBuilder クラスの定義（プレーンテキスト（普通の文字列）を使って文章を作るクラス）
 class TextBuilder : public Builder {
 private:
     std::stringstream buffer;
@@ -55,12 +55,12 @@ public:
         buffer << "==============================\n";
     }
 
-    std::string getResult() const {
+    std::string getResult() const { // 結果はstringとして返す
         return buffer.str();
     }
 };
 
-// HTMLBuilder クラスの定義
+// HTMLBuilder クラスの定義（HTMLファおるを作って文章を作るクラス）
 class HTMLBuilder : public Builder {
 private:
     std::string filename;
@@ -97,10 +97,10 @@ public:
     }
 };
 
-// Main 関数
+// Main 関数（動作テスト用のクラス）
 int main(int argc, char* argv[]) {
     if (argc != 2) {
-        std::cerr << "Usage: " << argv[0] << " plain | html" << std::endl;
+        std::cerr << "Usage: " << argv[0] << " plain | html" << std::endl;  // エラーメッセージ
         return 1;
     }
 
@@ -123,3 +123,18 @@ int main(int argc, char* argv[]) {
 
     return 0;
 }
+
+// javaであればStringBufferに文字列をappendしていく処理を、C++ではstringstreamを利用している。
+
+// Builderは、インスタンスを作成するためのインターフェース（API）を定める。実装をしているのがConcreteBuilder（TextBuilderなど）。
+// Builderは文章を構築するという目的を達成するのに必要かつ十分なメソッド群を宣言している必要がある。また、固有のメソッドまでを提供してはいけない。
+
+// Directorはインターフェース（API）を使ってインスタンスを作成する。ConcreteBuilder役がなんであってもうまく機能するように、Builder役の
+//メソッドのみを使う。
+
+// MainクラスがここではClientの役を担う。
+
+// オブジェクト指向プログラミングでは、どのクラスがどのメソッドを使えるか（使ってよいか）に注意してプログラミングする必要がある。
+
+// 正しく機能するのは、DirectorクラスがBuilderクラスの具体的なサブクラスを知らないから。
+//知らないからこそ、入れ替えができる。入れ替えられるからこそ、部品としての価値が高い（交換可能性がある）。
