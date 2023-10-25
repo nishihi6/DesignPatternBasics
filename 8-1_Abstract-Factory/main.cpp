@@ -2,6 +2,7 @@
 #include "ListFactory.h"
 // 他のFactory派生クラスのインクルードもここに追加する
 
+// 動作テスト用のクラス
 int main(int argc, char* argv[]) {
     if (argc != 2) {
         std::cout << "Usage: " << argv[0] << " class.name.of.ConcreteFactory" << std::endl;
@@ -44,3 +45,11 @@ int main(int argc, char* argv[]) {
 
     return 0;
 }
+
+// Abstract Factoryパターンでは、どのようなクラスを作り、どのようなメソッドを実装すればいいかがはっきりしている。（つまり、factoryクラス
+//が持っている抽象的な部分を具体化していく。）
+// このとき、いくら具体的な工場を追加しても抽象的な工場やMainの部分を修正する必要はない。
+
+// 部品を新たに追加するのは困難。
+
+// このAbstract Factoryパターンは複雑で、クラスもたくさん登場するので難しく感じられることが多い。
