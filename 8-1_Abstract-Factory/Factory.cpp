@@ -17,7 +17,7 @@ std::shared_ptr<Factory> Factory::getFactory(const std::string& classname) {
 
 void Page::output() {
     std::ofstream out(title + ".html");
-    out << makeHTML();
+    out << this->makeHTML();    // out << this->makeHTML();でもよい
     out.close();
     std::cout << title + ".html" << "を作成しました。" << std::endl;
 }
