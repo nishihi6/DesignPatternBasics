@@ -1,29 +1,29 @@
-#include <iostream>
+﻿#include <iostream>
 #include <string>
 
-// �B�����̃N���X�K�w�FDisplayImpl�N���X�i�����̃N���X�K�w�̍ŏ�ʃN���X�j
+// ③実装のクラス階層：DisplayImplクラス（実装のクラス階層の最上位クラス）
 class DisplayImpl {
 public:
-    virtual void rawOpen() = 0;     // �O����
-    virtual void rawPrint() = 0;    // �\������
-    virtual void rawClose() = 0;    // �㏈��
+    virtual void rawOpen() = 0;     // 前処理
+    virtual void rawPrint() = 0;    // 表示処理
+    virtual void rawClose() = 0;    // 後処理
     virtual ~DisplayImpl() {}
 };
 
-// �@�@�\�̃N���X�K�w�FDisplay�N���X�i�@�\�̃N���X�̍ŏ�ʃN���X�j
+// ①機能のクラス階層：Displayクラス（機能のクラスの最上位クラス）
 class Display {
 private:
-    DisplayImpl* impl;  // ������\���C���X�^���X�iimplementation�j
+    DisplayImpl* impl;  // 実装を表すインスタンス（implementation）
 public:
-    Display(DisplayImpl* impl) : impl(impl) {}  // �R���X�g���N�^�i������\���N���X�̃C���X�^���X��n���j
+    Display(DisplayImpl* impl) : impl(impl) {}  // コンストラクタ（実装を表すクラスのインスタンスを渡す）
     void open() {
-        impl->rawOpen();    // �\���̑O����
+        impl->rawOpen();    // 表示の前処理
     }
     void print() {
-        impl->rawPrint();   // �\������
+        impl->rawPrint();   // 表示処理
     }
     void close() {
-        impl->rawClose();   // �\���̌㏈��
+        impl->rawClose();   // 表示の後処理
     }
     void display() {
         open();
@@ -35,11 +35,11 @@ public:
     }
 };
 
-// �A�@�\�̃N���X�K�w�FCountDisplay�N���X�iDisplay�N���X�ɋ@�\��ǉ��j
+// ②機能のクラス階層：CountDisplayクラス（Displayクラスに機能を追加）
 class CountDisplay : public Display {
 public:
     CountDisplay(DisplayImpl* impl) : Display(impl) {}
-    void multiDisplay(int times) {  // �w��񐔂����\������
+    void multiDisplay(int times) {  // 指定回数だけ表示する
         open();
         for (int i = 0; i < times; i++) {
             print();
@@ -48,11 +48,11 @@ public:
     }
 };
 
-// �C�����̃N���X�K�w�FStringDisplayImpl�N���X�i�{���̎����j
+// ④実装のクラス階層：StringDisplayImplクラス（本当の実装）
 class StringDisplayImpl : public DisplayImpl {
 private:
-    std::string string; // �\������ׂ�������
-    int width;          // �o�C�g�P�ʂŌv�Z����������̕�
+    std::string string; // 表示するべき文字列
+    int width;          // バイト単位で計算した文字列の幅
 public:
     StringDisplayImpl(const std::string& string) : string(string), width(static_cast<int>(string.length())) {}
     void rawOpen() override {
@@ -74,7 +74,7 @@ private:
     }
 };
 
-// main�֐�
+// main関数
 int main() {
     Display* d1 = new Display(new StringDisplayImpl("Hello, Japan."));
     Display* d2 = new Display(new StringDisplayImpl("Hello, World."));
@@ -91,11 +91,11 @@ int main() {
     return 0;
 }
 
-// Bridge�p�^�[���̓����́A"�@�\�̃N���X�K�w"��"�����̃N���X�K�w"�𕪂��邱�ƂŁA�g������̂��y�ɂȂ�Ƃ����_�ɂ���iOS�ˑ��̗Ⴊ�킩��₷���j
+// Bridgeパターンの特徴は、"機能のクラス階層"と"実装のクラス階層"を分けることで、拡張するのが楽になるという点にある（OS依存の例がわかりやすい）
 
-// �p���͌ł����т��ł���̂ŁA�K�v�ɉ����ăN���X�Ԃ̊֌W��؂�ւ������Ƃ��ɂ͌p�����g���͕̂s�K�؂ł���
-//���̂��߁A�ڏ����s���i���̃R�[�h�ł́ADisplay�N���X�̒��ňڏ����g���Ă���iimpl�Ɏ��s���̏�����C���Ă���j�j
+// 継承は固い結びつきであるので、必要に応じてクラス間の関係を切り替えたいときには継承を使うのは不適切である
+//そのため、移譲を行う（このコードでは、Displayクラスの中で移譲が使われている（implに実行時の処理を任せている））
 
-// Main�N���X�ł̏C�������Ŏ�����؂�ւ��邱�Ƃ��ł���
+// Mainクラスでの修正だけで実装を切り替えることができる
 
-// 2��ނ̃N���X�K�w�𕪗����邱�ƂŁA�N���X�̊g�������ʂ��悭�s�����Ƃ��ł���
+// 2種類のクラス階層を分離することで、クラスの拡張を見通しよく行うことができる 
